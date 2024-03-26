@@ -27,6 +27,15 @@ def messages():
         db.session.add(new_message)
         db.session.commit()
         return make_response(new_message.to_dict(), 201)
+    
+@app.route('/messages/<int:id>', methods=["PATCH", "DELETE"])
+def message_by_id(id):
+    message = Message.query.filter(Message.id == id).first()
+    if request.method == "PATCH":
+        setattr(message, "body", request.json.get("body"))
+        db.session.add(message)
+        db.session.commit()
+        return make_response(message.to_dict(), 200)
 
 @app.route('/messages/<int:id>')
 def messages_by_id(id):
