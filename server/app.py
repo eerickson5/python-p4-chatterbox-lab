@@ -33,9 +33,14 @@ def message_by_id(id):
     message = Message.query.filter(Message.id == id).first()
     if request.method == "PATCH":
         setattr(message, "body", request.json.get("body"))
+        setattr(message, "username", request.json.get("username"))
         db.session.add(message)
         db.session.commit()
         return make_response(message.to_dict(), 200)
+    elif request.method == "DELETE":
+        db.session.delete(message)
+        db.session.commit()
+        return make_response({"response": "Message deleted successfully."}, 200)
 
 @app.route('/messages/<int:id>')
 def messages_by_id(id):
